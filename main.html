@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Checker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+        }
+        .question-group {
+            margin-bottom: 15px;
+        }
+        .question-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .question-group input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Quiz Checker</h1>
+        <div id="inputSection">
+            <div class="question-group">
+                <label for="answerInput">Enter your answers:</label>
+                <input type="number" id="answerInput" placeholder="Enter answer">
+                <button onclick="addAnswer()">Submit Answer</button>
+            </div>
+            <div class="question-group" id="answersList">
+                <!-- Answers will be listed here -->
+            </div>
+            <button onclick="finishInput()">Finish Input</button>
+        </div>
+
+        <div id="correctAnswersSection" style="display:none;">
+            <div class="question-group">
+                <label for="correctAnswerInput">Enter the correct answers:</label>
+                <input type="number" id="correctAnswerInput" placeholder="Enter correct answer">
+                <button onclick="checkAnswers()">Submit Correct Answer</button>
+            </div>
+            <div class="question-group" id="correctAnswersList">
+                <!-- Correct answers list will be here -->
+            </div>
+        </div>
+
+        <div class="result" id="resultSection" style="display:none;">
+            <h2>Results</h2>
+            <div id="results"></div>
+        </div>
+    </div>
+
+    <script>
+        let answers = [];
+        let correctAnswers = [];
+        let questionNumber = 1;
+
+        function addAnswer() {
+            const answerInput = document.getElementById('answerInput');
+            const answer = parseInt(answerInput.value);
+            if (answer === -1) {
+                document.getElementById('inputSection').style.display = 'none';
+                document.getElementById('correctAnswersSection').style.display = 'block';
+                return;
+            }
+            if (isNaN(answer)) {
+                alert('Please enter a valid number.');
+                return;
+            }
+            answers.push(answer);
+            document.getElementById('answersList').innerHTML += `<p>Q.no ${questionNumber++}=> ${answer}</p>`;
+            answerInput.value = '';
+        }
+
+        function finishInput() {
+            document.getElementById('inputSection').style.display = 'none';
+            document.getElementById('correctAnswersSection').style.display = 'block';
+        }
+
+        function checkAnswers() {
+            const correctAnswerInput = document.getElementById('correctAnswerInput');
+            const correctAnswer = parseInt(correctAnswerInput.value);
+            if (isNaN(correctAnswer)) {
+                alert('Please enter a valid number.');
+                return;
+            }
+            correctAnswers.push(correctAnswer);
+            document.getElementById('correctAnswersList').innerHTML += `<p>Q.no ${correctAnswers.length}=> ${correctAnswer}</p>`;
+            correctAnswerInput.value = '';
+
+            if (correctAnswers.length === answers.length) {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            let resultsHtml = '';
+            for (let i = 0; i < answers.length; i++) {
+                if (i < correctAnswers.length) {
+                    if (answers[i] === correctAnswers[i]) {
+                        resultsHtml += `<p>Q.no ${i + 1}=> Good Job! Correct answer</p>`;
+                    } else {
+                        resultsHtml += `<p>Q.no ${i + 1}=> Wrong Answer! You gave ${answers[i]}</p>`;
+                    }
+                }
+            }
+            document.getElementById('results').innerHTML = resultsHtml;
+            document.getElementById('correctAnswersSection').style.display = 'none';
+            document.getElementById('resultSection').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
